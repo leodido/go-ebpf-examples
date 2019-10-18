@@ -16,24 +16,26 @@ import (
 const howlong = 10 * time.Second
 const interval = 1 * time.Second
 
+const eBPFFileName = "pkts.o"
+
 func getBPF() (string, error) {
 	dir, err := os.Getwd()
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("unable to find %q eBPF file", eBPFFileName)
 	}
-	return path.Join(dir, "pkts.o"), nil
+	return path.Join(dir, eBPFFileName), nil
 }
 
 func main() {
 	bpf, err := getBPF()
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "unable to find `pkts.o` eBPF file")
+		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 
 	m := bpflib.NewModule(bpf)
 	if err := m.Load(nil); err != nil {
-		fmt.Fprintln(os.Stderr, "error loading pkts.o")
+		fmt.Fprintf(os.Stderr, "error loading %q: %s\n", bpf, err)
 		os.Exit(1)
 	}
 
