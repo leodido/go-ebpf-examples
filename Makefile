@@ -28,7 +28,7 @@ elf/include:
 	@mkdir -p $@
 
 %.o: %.c elf/include/bpf_helpers.h elf/include/bpf_map.h
-	clang -O2 -S -target bpf -c $< -o $@
+	clang -O2 -target bpf -c $< -o $@
 
 .PHONY: vendor
 vendor:
